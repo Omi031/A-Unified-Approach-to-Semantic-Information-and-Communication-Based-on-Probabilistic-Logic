@@ -60,7 +60,8 @@ def MinimumEdgeEntropy():
   return ae, kbe
 
 def BeyoundTask():
-  ji_list = ['25', '25', '25', '35']
+  ji_list = ['25', '23', '24', '34', '35']
+  
   X = Pr('Bob', 'Beyond')
   ae = [abs(X[5]-X_gt[5])]
   kbe = [U_KB(X)]
@@ -68,16 +69,17 @@ def BeyoundTask():
     p['Bob']['Beyond'][ji] = p['Alice']['Original'][ji]
     X = Pr('Bob', 'Beyond')
     ae.append(abs(X[5]-X_gt[5]))
-    kbe.append(AverageError(X))
+    kbe.append(U_KB(X))
   return ae, kbe
 
 def WithinTask():
-  ji_list = ['25', '23', '24', '34', '35']
+  ji_list = ['25', '24', '34', '35']
   X = Pr('Bob', 'Within')
   ae = [abs(X[5]-X_gt[5])]
   kbe = [U_KB(X)]
   for ji in ji_list:
     p['Bob']['Within'][ji] = p['Alice']['Original'][ji]
+    print(p['Bob']['Within'])
     X = Pr('Bob', 'Within')
     ae.append(abs(X[5]-X_gt[5]))
     kbe.append(U_KB(X))

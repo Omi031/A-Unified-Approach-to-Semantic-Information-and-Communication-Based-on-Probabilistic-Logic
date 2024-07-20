@@ -76,6 +76,10 @@ def AverageError(X, X_gt=X_gt):
   err_avg = np.mean(err_abs)
   return err_avg
 
+def AverageAnswer(X):
+  ans_avg = np.mean(X[1:])
+  return ans_avg
+
 print(AverageError(Pr('Ground Truth')))
 
 def Replacement():
@@ -92,7 +96,7 @@ def Replacement():
   return r, kbe
 
 def MaximumEdgeProbability():
-  ji_list = ['23', '34', '12', '15', '24']
+  ji_list = ['23', '24', '25', '34', '35']
   # ji_list = ['12', '15', '23', '24', '25', '34', '35']
   X = Pr('Bob', 'A2')
   mep = [AverageError(X)]
@@ -107,6 +111,7 @@ def MaximumEdgeProbability():
 
 def MinimumEdgeEntropy():
   ji_list = ['25', '23', '24', '34', '35']
+  # ji_list = ['23', '24', '25', '34', '35']
   X = Pr('Bob', 'A3')
   mee = [AverageError(X)]
   kbe = [U_KB(X)]
@@ -118,48 +123,78 @@ def MinimumEdgeEntropy():
   return mee, kbe
 
 def MinimumKnowledgeBaseEntropy():
-  ji_list = ['12', '15', '23', '24', '25', '34', '35']
+  ji_list = ['24']
   X = Pr('Bob', 'A4')
-  mnbe = [AverageError(X)]
-  kbe = [U_KB(X)]
-  for i in range(1):
-    k = 1000
-    for ji in ji_list:
-      p_temp = p['Bob']['A4']
-      p['Bob']['A4'][ji] = p['Alice']['Original'][ji]
-      k_temp = U_KB(Pr('Bob', 'A4'))
-      if k_temp < k:
-        k = k_temp
-        idx = ji
-      p['Bob']['A4'] = p_temp
-    p['Bob']['A4'][idx] = p['Alice']['Original'][idx]
-    X = Pr('Bob', 'A4')
-    mnbe.append(AverageError(X))
-    kbe.append(U_KB(X))
-  return mnbe, kbe
-
-def MaximumAverageAnswerProbability():
-  ji_list = ['12', '15', '23', '24', '25', '34', '35']
-  X = Pr('Bob', 'A5')
   ae = [AverageError(X)]
   kbe = [U_KB(X)]
-  for i in range(3):
-    aep = 1000
-    for ji in ji_list:
-      p_temp = p['Bob']['A5']
-      p['Bob']['A5'][ji] = p['Alice']['Original'][ji]
-      aep_temp = AverageError(Pr('Bob', 'A5'))
-      if aep_temp < aep:
-        aep = aep_temp
-        idx = ji
-      p['Bob']['A5'] = p_temp
-    p['Bob']['A4'][idx] = p['Alice']['Original'][idx]
+  for ji in ji_list:
+    p['Bob']['A4'][ji] = p['Alice']['Original'][ji]
     X = Pr('Bob', 'A4')
     ae.append(AverageError(X))
     kbe.append(U_KB(X))
   return ae, kbe
 
+def MaximumAverageAnswerProbability():
+  ji_list = ['23', '34']
+  X = Pr('Bob', 'A5')
+  ae = [AverageError(X)]
+  kbe = [U_KB(X)]
+  for ji in ji_list:
+    p['Bob']['A5'][ji] = p['Alice']['Original'][ji]
+    X = Pr('Bob', 'A5')
+    ae.append(AverageError(X))
+    kbe.append(U_KB(X))
+    print(AverageAnswer(X))
+  return ae, kbe
+
+# def MinimumKnowledgeBaseEntropy():
+#   ji_list = ['23', '24', '25', '34', '35']
+#   X = Pr('Bob', 'A4')
+#   mnbe = [AverageError(X)]
+#   kbe = [U_KB(X)]
+#   for i in range(1):
+#     k = 1000
+#     p_temp = p['Bob']['A4']
+#     for ji in ji_list:
+      
+#       p['Bob']['A4'][ji] = p['Alice']['Original'][ji]
+#       k_temp = U_KB(Pr('Bob', 'A4'))
+#       if k_temp < k:
+#         k = k_temp
+#         idx = ji
+#         print(idx)
+#       print(k_temp)
+#       p['Bob']['A4'] = p_temp
+#       print(p['Bob']['A4'])
+#     p['Bob']['A4'][idx] = p['Alice']['Original'][idx]
+#     X = Pr('Bob', 'A4')
+#     mnbe.append(AverageError(X))
+#     kbe.append(U_KB(X))
+#   return mnbe, kbe
+
+# def MaximumAverageAnswerProbability():
+#   ji_list = ['12', '15', '23', '24', '25', '34', '35']
+#   X = Pr('Bob', 'A5')
+#   ae = [AverageError(X)]
+#   kbe = [U_KB(X)]
+#   for i in range(3):
+#     aep = 1000
+#     for ji in ji_list:
+#       p_temp = p['Bob']['A5']
+#       p['Bob']['A5'][ji] = p['Alice']['Original'][ji]
+#       aep_temp = AverageError(Pr('Bob', 'A5'))
+#       if aep_temp < aep:
+#         aep = aep_temp
+#         idx = ji
+#       p['Bob']['A5'] = p_temp
+#     p['Bob']['A4'][idx] = p['Alice']['Original'][idx]
+#     X = Pr('Bob', 'A4')
+#     ae.append(AverageError(X))
+#     kbe.append(U_KB(X))
+#   return ae, kbe
+
 ae_kbe = []
+label = ['Replacement', 'Max Edge Probability', 'Min Edge Entropy', 'Min KB Entropy', 'Max Answer Probability']
 
 ae_kbe.append(Replacement())
 ae_kbe.append(MaximumEdgeProbability())
@@ -167,20 +202,23 @@ ae_kbe.append(MinimumEdgeEntropy())
 ae_kbe.append(MinimumKnowledgeBaseEntropy())
 ae_kbe.append(MaximumAverageAnswerProbability())
 
+
+
 for i in range(5):
-  plt.plot(ae_kbe[i][0])
+  plt.plot(ae_kbe[i][0], label=label[i])
 
 plt.xlim(0, 7)
-# plt.ylim(0.70, 0.78)
+# plt.ylim(-0.05, 0.17)
+plt.legend()
 
 plt.show()
 
 for i in range(5):
-  plt.plot(ae_kbe[i][1])
+  plt.plot(ae_kbe[i][1], label=label[i])
 
 plt.xlim(0, 7)
-# plt.ylim(0.70, 0.78)
-
+plt.ylim(0.70, 0.78)
+plt.legend()
 plt.show()
 
 # p_gt = X_gt[1:]
