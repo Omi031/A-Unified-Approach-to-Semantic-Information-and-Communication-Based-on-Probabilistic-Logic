@@ -15,6 +15,8 @@ p = {'Ground Truth': {'Original': {'12':0.7, '15':0.3, '23':0.7, '24':0.3, '25':
     }
 
 
+
+
 a = ['23', '34', '12', '15', '24']
 def Pr(name, rule='Original'):
   X = np.ones(6)
@@ -66,12 +68,15 @@ def U_KB(X_list):
 #   return H
 
 
+
 X_gt = Pr('Ground Truth')
 
 def AverageError(X, X_gt=X_gt):
   err_abs = abs(X[1:]-X_gt[1:])
   err_avg = np.mean(err_abs)
   return err_avg
+
+print(AverageError(Pr('Ground Truth')))
 
 def Replacement():
   keys = list(p['Bob']['Original'].keys())
